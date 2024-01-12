@@ -4,18 +4,12 @@ ARG GRADLE_VERSION=8.4
 
 RUN apt-get update && apt-get install -yq make unzip
 
-RUN wget -q https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip \
-    && unzip gradle-${GRADLE_VERSION}-bin.zip \
-    && rm gradle-${GRADLE_VERSION}-bin.zip
+WORKDIR /backend
 
-ENV GRADLE_HOME=/opt/gradle
+COPY ./ .
 
-RUN mv gradle-${GRADLE_VERSION} ${GRADLE_HOME}
+RUN ./gradlew --no-daemon build
 
-ENV PATH=$PATH:$GRADLE_HOME/bin
+EXPOSE 8080
 
-COPY app/ .
-
-RUN gradle installDist
-
-CMD build/install/app/bin/app
+CMD java -jar build/libs/app-0.0.1-SNAPSHOT.jar
