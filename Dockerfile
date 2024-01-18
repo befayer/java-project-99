@@ -1,12 +1,18 @@
-FROM eclipse-temurin:20-jdk
+FROM gradle:8.4.0-jdk20
 
-ARG GRADLE_VERSION=8.5
+WORKDIR /app
 
 RUN apt-get update && apt-get install -yq make unzip
 
-WORKDIR /backend
+COPY config config
+COPY gradle gradle
+COPY build.gradle .
+COPY settings.gradle .
+COPY gradlew .
 
-COPY ./ .
+RUN ./gradlew --no-daemon dependencies
+
+COPY src src
 
 RUN ./gradlew --no-daemon build
 
