@@ -1,13 +1,15 @@
-FROM bellsoft/liberica-openjre-alpine:21 AS layers
-WORKDIR application
-COPY build/libs/*.jar app.jar
-RUN java -Djarmode=layertools -jar app.jar extract
+FROM eclipse-temurin:20-jdk
 
-FROM bellsoft/liberica-openjre-alpine:21
-VOLUME /tmp
-COPY --from=layers application/dependencies/ ./
-COPY --from=layers application/spring-boot-loader/ ./
-COPY --from=layers application/snapshot-dependencies/ ./
-COPY --from=layers application/application/ ./
+ARG GRADLE_VERSION=8.4
 
-ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
+RUN apt-get update && apt-get install -yq make unzip
+
+WORKDIR /backend
+
+COPY ./ .
+
+RUN ./gradlew --no-daemon build
+
+EXPOSE 8080
+
+CMD java -jar build/libs/app-0.0.1-SNAPSHOT.jar
