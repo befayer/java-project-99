@@ -3,10 +3,15 @@ package hexlet.code.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 
 @Entity
+@RequiredArgsConstructor
+@ToString
 @Table(name = "users")
 public class User {
     @Id
@@ -24,10 +29,11 @@ public class User {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Size(min = 8)
+    @Size(min = 3)
     @Column(name = "password", nullable = false)
     private String password;
 
+    @CreationTimestamp
     @Column(name = "created_at")
     private Instant createdAt;
 
