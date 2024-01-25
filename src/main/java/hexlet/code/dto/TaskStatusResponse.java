@@ -10,10 +10,9 @@ import java.time.Instant;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResponseDto implements Serializable {
+public class TaskStatusResponse implements Serializable {
     private Long id;
-    private String firstName;
-    private String lastName;
-    private String email;
+    private String name;
+    private String slug;
     private Instant createdAt;
 }

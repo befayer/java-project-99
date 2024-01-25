@@ -3,6 +3,8 @@ spring:
     active: ${APP_ENV:dev}
   jpa:
     show-sql: true
+    hibernate:
+      ddl-auto: none # или другое значение, например, validate
     properties:
       hibernate:
         format_sql: true
@@ -14,3 +16,7 @@ spring:
       mode: always
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
+
+rsa:
+  private-key: classpath:certs/private.pem
+  public-key: classpath:certs/public.pem

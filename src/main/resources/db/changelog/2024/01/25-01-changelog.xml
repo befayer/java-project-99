@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1706178010619-1" author="kalininaa (generated)">
+        <createTable tableName="labels">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_labels"/>
+            </column>
+            <column name="name" type="VARCHAR(1000)"/>
+            <column name="created_at" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1706178010619-2" author="kalininaa (generated)">
+        <createTable tableName="statuses">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_statuses"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="slug" type="VARCHAR(255)"/>
+            <column name="created_at" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1706178010619-3" author="kalininaa (generated)">
+        <createTable tableName="tasks">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_tasks"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="index" type="BIGINT"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="task_status_id" type="BIGINT"/>
+            <column name="assignee_id" type="BIGINT"/>
+            <column name="created_at" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1706178010619-4" author="kalininaa (generated)">
+        <createTable tableName="tasks_labels">
+            <column name="labels_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_tasks_labels"/>
+            </column>
+            <column name="task_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_tasks_labels"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1706178010619-5" author="kalininaa (generated)">
+        <createTable tableName="users">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_users"/>
+            </column>
+            <column name="first_name" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(255)"/>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="updated_at" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1706178010619-6" author="kalininaa (generated)">
+        <addUniqueConstraint columnNames="name" constraintName="uc_labels_name" tableName="labels"/>
+    </changeSet>
+    <changeSet id="1706178010619-7" author="kalininaa (generated)">
+        <addUniqueConstraint columnNames="name" constraintName="uc_statuses_name" tableName="statuses"/>
+    </changeSet>
+    <changeSet id="1706178010619-8" author="kalininaa (generated)">
+        <addUniqueConstraint columnNames="slug" constraintName="uc_statuses_slug" tableName="statuses"/>
+    </changeSet>
+    <changeSet id="1706178010619-9" author="kalininaa (generated)">
+        <addUniqueConstraint columnNames="email" constraintName="uc_users_email" tableName="users"/>
+    </changeSet>
+    <changeSet id="1706178010619-10" author="kalininaa (generated)">
+        <addForeignKeyConstraint baseColumnNames="assignee_id" baseTableName="tasks"
+                                 constraintName="FK_TASKS_ON_ASSIGNEE" referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+    <changeSet id="1706178010619-11" author="kalininaa (generated)">
+        <addForeignKeyConstraint baseColumnNames="task_status_id" baseTableName="tasks"
+                                 constraintName="FK_TASKS_ON_TASK_STATUS" referencedColumnNames="id"
+                                 referencedTableName="statuses"/>
+    </changeSet>
+    <changeSet id="1706178010619-12" author="kalininaa (generated)">
+        <addForeignKeyConstraint baseColumnNames="labels_id" baseTableName="tasks_labels"
+                                 constraintName="fk_taslab_on_label" referencedColumnNames="id"
+                                 referencedTableName="labels"/>
+    </changeSet>
+    <changeSet id="1706178010619-13" author="kalininaa (generated)">
+        <addForeignKeyConstraint baseColumnNames="task_id" baseTableName="tasks_labels"
+                                 constraintName="fk_taslab_on_task" referencedColumnNames="id"
+                                 referencedTableName="tasks"/>
+    </changeSet>
+
+</databaseChangeLog>

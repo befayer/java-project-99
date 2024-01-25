@@ -1,5 +1,6 @@
 package hexlet.code.dto;
 
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,10 +11,9 @@ import java.time.Instant;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResponseDto implements Serializable {
+public class LabelResponse implements Serializable {
     private Long id;
-    private String firstName;
-    private String lastName;
-    private String email;
+    @Size(min = 3, max = 1000)
+    private String name;
     private Instant createdAt;
 }

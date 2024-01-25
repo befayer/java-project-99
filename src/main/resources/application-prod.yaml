@@ -6,3 +6,4 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+      dialect: org.hibernate.dialect.PostgreSQLDialect

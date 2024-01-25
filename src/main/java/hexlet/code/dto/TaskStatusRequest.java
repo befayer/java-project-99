@@ -9,9 +9,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRequestDto implements Serializable {
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String password;
+public class TaskStatusRequest implements Serializable {
+    private String name;
+    private String slug;
 }
