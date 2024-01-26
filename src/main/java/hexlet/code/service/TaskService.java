@@ -20,9 +20,13 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * Service class for handling Task-related operations.
+ */
 @RequiredArgsConstructor
 @Service
-public class TaskService {
+public final class TaskService {
+
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
     private final TaskStatusRepository taskStatusRepository;
@@ -30,16 +34,34 @@ public class TaskService {
     private final LabelRepository labelRepository;
     private final TaskSpecification taskSpecification;
 
+    /**
+     * Finds a task by its ID.
+     *
+     * @param id The ID of the task to be retrieved.
+     * @return The task response DTO.
+     */
     public TaskResponse findById(Long id) {
         Task task = taskRepository.findById(id).orElseThrow();
         return taskMapper.toTaskResponse(task);
     }
 
+    /**
+     * Finds all tasks based on the specified parameters.
+     *
+     * @param taskParams The parameters to filter tasks.
+     * @return List of task response DTOs.
+     */
     public List<TaskResponse> findAll(TaskParams taskParams) {
         Specification<Task> specification = taskSpecification.build(taskParams);
         return taskRepository.findAll(specification).stream().map(taskMapper::toTaskResponse).toList();
     }
 
+    /**
+     * Saves a new task.
+     *
+     * @param taskRequest The request DTO containing task information.
+     * @return The created task response DTO.
+     */
     public TaskResponse save(TaskRequest taskRequest) {
         Task task = taskMapper.toTask(taskRequest);
 
@@ -49,9 +71,16 @@ public class TaskService {
         return taskMapper.toTaskResponse(saved);
     }
 
+    /**
+     * Updates a task by its ID.
+     *
+     * @param id           The ID of the task to be updated.
+     * @param taskRequest The request DTO containing updated task information.
+     * @return The updated task response DTO.
+     */
     public TaskResponse updateById(Long id, TaskRequest taskRequest) {
         Task task = taskRepository.findById(id).orElseThrow();
-        //update only basic fields
+        // Update only basic fields
         Task updated = taskMapper.partialUpdate(taskRequest, task);
 
         setAssociations(taskRequest, updated);
@@ -60,6 +89,11 @@ public class TaskService {
         return taskMapper.toTaskResponse(saved);
     }
 
+    /**
+     * Deletes a task by its ID.
+     *
+     * @param id The ID of the task to be deleted.
+     */
     public void deleteById(Long id) {
         taskRepository.deleteById(id);
     }

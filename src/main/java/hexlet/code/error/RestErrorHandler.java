@@ -14,22 +14,39 @@ import java.util.NoSuchElementException;
 
 @ControllerAdvice
 public class RestErrorHandler extends ResponseEntityExceptionHandler {
+
+    /**
+     * Handles the exception when a username is not found.
+     *
+     * @param ex The exception to handle.
+     * @return ResponseEntity with the error message and HTTP status code UNAUTHORIZED.
+     */
     @ExceptionHandler(value = {
-            UsernameNotFoundException.class,
-            NoSuchElementException.class,
-            BadCredentialsException.class
+        UsernameNotFoundException.class,
+        NoSuchElementException.class,
+        BadCredentialsException.class
     })
     public ResponseEntity<?> handleUsernameNotFoundException(Exception ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
-
+    /**
+     * Handles the exception when access is denied.
+     *
+     * @param ex The exception to handle.
+     * @return ResponseEntity with the error message and HTTP status code FORBIDDEN.
+     */
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
     }
 
-
+    /**
+     * Handles the exception when a SQL integrity constraint violation occurs.
+     *
+     * @param ex The exception to handle.
+     * @return ResponseEntity with the error message and HTTP status code BAD_REQUEST.
+     */
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<String> handleSQLIntegrityConstraintViolationException(SQLException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);

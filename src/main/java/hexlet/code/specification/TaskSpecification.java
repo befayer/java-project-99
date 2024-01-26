@@ -6,21 +6,29 @@ import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
+/**
+ * Specification class for building dynamic queries for tasks.
+ */
 @Component
-public class TaskSpecification {
+public final class TaskSpecification {
+
+    /**
+     * Builds a Specification based on the provided parameters.
+     *
+     * @param params The parameters for filtering tasks.
+     * @return Specification<Task> representing the dynamic query.
+     */
     public Specification<Task> build(TaskParams params) {
         return withNameCont(params.getTitleCont())
                 .and(withAssigneeId(params.getAssigneeId()))
                 .and(withStatusSlug(params.getStatus()))
                 .and(withLabelId(params.getLabelId()));
-
     }
 
     private Specification<Task> withNameCont(String name) {
         return (root, query, cb) -> name == null
                 ? cb.conjunction()
                 : cb.like(cb.lower(root.get("name")), "%" + name + "%");
-
     }
 
     private Specification<Task> withAssigneeId(Long assigneeId) {

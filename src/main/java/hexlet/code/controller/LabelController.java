@@ -27,23 +27,47 @@ public class LabelController {
 
     private final LabelService labelService;
 
+    /**
+     * Updates a label by its ID.
+     *
+     * @param id           The ID of the label to be updated.
+     * @param labelRequest The request containing updated label information.
+     * @return The updated label response.
+     */
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public LabelResponse updateById(@PathVariable Long id, @RequestBody LabelRequest labelRequest) {
         return labelService.updateById(id, labelRequest);
     }
 
+    /**
+     * Creates a new label.
+     *
+     * @param labelRequest The request containing label information.
+     * @return The created label response.
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public LabelResponse save(@RequestBody LabelRequest labelRequest) {
         return labelService.save(labelRequest);
     }
 
+    /**
+     * Finds a label by its ID.
+     *
+     * @param id The ID of the label to be retrieved.
+     * @return The label response.
+     */
     @GetMapping("/{id}")
     public LabelResponse findById(@PathVariable Long id) {
         return labelService.findById(id);
     }
 
+    /**
+     * Finds all labels.
+     *
+     * @return ResponseEntity with a list of label responses and headers including total count.
+     */
     @GetMapping
     public ResponseEntity<List<LabelResponse>> findAll() {
         List<LabelResponse> labels = labelService.findAll();
@@ -53,6 +77,11 @@ public class LabelController {
         return new ResponseEntity<>(labels, headers, HttpStatus.OK);
     }
 
+    /**
+     * Deletes a label by its ID.
+     *
+     * @param id The ID of the label to be deleted.
+     */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Long id) {

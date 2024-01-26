@@ -29,6 +29,9 @@ public class SecurityConfig {
     private final JwtDecoder jwtDecoder;
     private final UserDetailsService userDetailsService;
 
+    /**
+     * Matcher for public URLs.
+     */
     public static final RequestMatcher PUBLIC_URLS = new OrRequestMatcher(
             new AntPathRequestMatcher("/api/login/**"),
             new AntPathRequestMatcher("/welcome"),
@@ -40,6 +43,13 @@ public class SecurityConfig {
             new AntPathRequestMatcher("/assets/**")
     );
 
+    /**
+     * Configures the security filter chain.
+     *
+     * @param http the {@link HttpSecurity} to configure
+     * @return the {@link SecurityFilterChain}
+     * @throws Exception in case of configuration errors
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
@@ -58,16 +68,33 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Configures the {@link AuthenticationManager}.
+     *
+     * @param authConfig the {@link AuthenticationConfiguration} to use
+     * @return the {@link AuthenticationManager}
+     * @throws Exception in case of configuration errors
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
+    /**
+     * Configures the {@link PasswordEncoder}.
+     *
+     * @return the {@link PasswordEncoder}
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Configures the {@link DaoAuthenticationProvider}.
+     *
+     * @return the {@link DaoAuthenticationProvider}
+     */
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();

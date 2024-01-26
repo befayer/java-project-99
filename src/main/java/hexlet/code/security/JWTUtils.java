@@ -9,12 +9,21 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
+/**
+ * Utility class for handling JWT (JSON Web Token) operations.
+ */
 @Component
 @RequiredArgsConstructor
-public class JWTUtils {
+public final class JWTUtils {
 
     private final JwtEncoder encoder;
 
+    /**
+     * Generates a JWT token for the given username.
+     *
+     * @param username The username for which the token is generated.
+     * @return The generated JWT token.
+     */
     public String generateToken(String username) {
         Instant now = Instant.now();
         JwtClaimsSet claims = JwtClaimsSet.builder()

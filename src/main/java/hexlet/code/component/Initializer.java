@@ -14,27 +14,38 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * Component for initializing default data in the application.
+ */
 @RequiredArgsConstructor
 @Component
-public class Initializer implements ApplicationRunner {
+public final class Initializer implements ApplicationRunner {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final TaskStatusRepository taskStatusRepository;
     private final LabelRepository labelRepository;
 
+    /**
+     * Run the initializer to populate default data.
+     *
+     * @param args The application arguments.
+     * @throws Exception If an error occurs during initialization.
+     */
     @Override
     public void run(ApplicationArguments args) throws Exception {
         User defaultUser = userRepository.findByEmail("hexlet@example.com").orElse(null);
         if (defaultUser != null) {
             return;
         }
+
         User user = new User();
         user.setEmail("hexlet@example.com");
         user.setFirstName("John");
         user.setLastName("Doe");
         user.setPassword(passwordEncoder.encode("qwerty"));
         userRepository.save(user);
+
         User user1 = new User();
         user1.setEmail("email@email.com");
         user1.setPassword(passwordEncoder.encode("qwerty"));

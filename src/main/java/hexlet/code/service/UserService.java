@@ -13,14 +13,22 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing users.
+ */
 @RequiredArgsConstructor
 @Service
-public class UserService {
+public final class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Retrieves all users.
+     *
+     * @return List of UserResponseDto representing all users.
+     */
     public List<UserResponseDto> findAll() {
         List<User> users = userRepository.findAll();
         return users.stream()
@@ -28,11 +36,23 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves a user by ID.
+     *
+     * @param id The ID of the user.
+     * @return UserResponseDto representing the user.
+     */
     public UserResponseDto findById(Long id) {
         User user = userRepository.findById(id).orElseThrow();
         return userMapper.toDto(user);
     }
 
+    /**
+     * Saves a new user.
+     *
+     * @param userRequestDto The data for creating a new user.
+     * @return UserResponseDto representing the saved user.
+     */
     public UserResponseDto save(UserRequestDto userRequestDto) {
         String encodedPassword = passwordEncoder.encode(userRequestDto.getPassword());
         userRequestDto.setPassword(encodedPassword);
@@ -42,10 +62,22 @@ public class UserService {
         return userMapper.toDto(resultUser);
     }
 
+    /**
+     * Deletes a user by ID.
+     *
+     * @param id The ID of the user to delete.
+     */
     public void deleteById(Long id) {
         userRepository.deleteById(id);
     }
 
+    /**
+     * Updates a user by ID.
+     *
+     * @param id              The ID of the user to update.
+     * @param userRequestDto The data for updating the user.
+     * @return UserResponseDto representing the updated user.
+     */
     public UserResponseDto updateById(Long id, UserRequestDto userRequestDto) {
         if (userRequestDto.getPassword() != null) {
             String encodedPassword = passwordEncoder.encode(userRequestDto.getPassword());
