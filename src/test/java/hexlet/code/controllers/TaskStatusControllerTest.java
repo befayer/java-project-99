@@ -24,12 +24,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Test class for the {@link hexlet.code.controller.TaskStatusController}
+ * Test class for the {@link hexlet.code.controller.TaskStatusController}.
  */
 @SpringBootTest(
         properties = {
-                "spring.jpa.defer-datasource-initialization=false",
-                "spring.sql.init.mode=never"
+            "spring.jpa.defer-datasource-initialization=false",
+            "spring.sql.init.mode=never"
         }
 )
 @AutoConfigureMockMvc
@@ -44,6 +44,11 @@ public class TaskStatusControllerTest {
 
     private TaskStatus testTaskStatus;
 
+    /**
+     * Setup method to initialize the test environment before each test.
+     * Creates a test instance of {@link TaskStatus} using Instancio,
+     * ignoring the 'id' field, and saves it to the repository.
+     */
     @BeforeEach
     public void beforeEach() {
         testTaskStatus = Instancio.of(TaskStatus.class)
@@ -52,6 +57,10 @@ public class TaskStatusControllerTest {
         taskStatusRepository.save(testTaskStatus);
     }
 
+    /**
+     * Test method for deleting a TaskStatus by ID.
+     * Expects a successful response with status code 204 (No Content).
+     */
     @Test
     @DisplayName("Test delete")
     public void deleteTest() throws Exception {
@@ -62,6 +71,10 @@ public class TaskStatusControllerTest {
                 .andDo(print());
     }
 
+    /**
+     * Test method for finding all TaskStatus instances.
+     * Expects a successful response with status code 200 (OK).
+     */
     @Test
     @DisplayName("Test find all")
     public void findAllTest() throws Exception {
@@ -72,6 +85,10 @@ public class TaskStatusControllerTest {
                 .andDo(print());
     }
 
+    /**
+     * Test method for finding a TaskStatus by ID.
+     * Expects a successful response with status code 200 (OK).
+     */
     @Test
     @DisplayName("Test find by id")
     public void findByIdTest() throws Exception {
@@ -82,6 +99,11 @@ public class TaskStatusControllerTest {
                 .andDo(print());
     }
 
+    /**
+     * Test method for saving a new TaskStatus.
+     * Expects a successful response with status code 201 (Created).
+     * Also, checks if the saved TaskStatus can be retrieved from the repository.
+     */
     @Test
     @DisplayName("Test save")
     public void saveTest() throws Exception {
@@ -101,6 +123,10 @@ public class TaskStatusControllerTest {
         assertNotNull(taskStatus.get());
     }
 
+    /**
+     * Test method for updating a TaskStatus by ID.
+     * Expects a successful response with status code 200 (OK).
+     */
     @Test
     @DisplayName("Test update by id")
     public void updateByIdTest() throws Exception {

@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -25,12 +24,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Test class for the {@link hexlet.code.controller.UserController}
+ * Test class for the {@link hexlet.code.controller.UserController}.
  */
 @SpringBootTest(
         properties = {
-                "spring.jpa.defer-datasource-initialization=false",
-                "spring.sql.init.mode=never"
+            "spring.jpa.defer-datasource-initialization=false",
+            "spring.sql.init.mode=never"
         }
 )
 @AutoConfigureMockMvc
@@ -46,13 +45,27 @@ public class UserControllerTest {
 
     private User testUser;
 
+    /**
+     * Javadoc for the 'beforeEach' method.
+     * This method is annotated with {@code @BeforeEach}, indicating that it should be executed before each test method.
+     * It is responsible for setting up the necessary test data, in this case, creating a test user instance
+     * using the configured {@link ModelGenerator#getUserModel()} and saving it to the user repository.
+     *
+     * This method ensures that a fresh test user is available before each test, providing a clean state for testing.
+     */
     @BeforeEach
     public void beforeEach() {
-        testUser = Instancio.of(modelGenerator.getUserModel())
-                .create();
+        // Create a test user instance using the configured user model
+        testUser = Instancio.of(modelGenerator.getUserModel()).create();
+
+        // Save the test user to the user repository
         userRepository.save(testUser);
     }
 
+
+    /**
+     * Test find all.
+     */
     @Test
     @DisplayName("Test find all")
     public void findAllTest() throws Exception {
@@ -62,6 +75,9 @@ public class UserControllerTest {
                 .andDo(print());
     }
 
+    /**
+     * Test delete by id.
+     */
     @Test
     @DisplayName("Test delete by id")
     public void deleteByIdTest() throws Exception {
@@ -71,6 +87,9 @@ public class UserControllerTest {
                 .andDo(print());
     }
 
+    /**
+     * Test find by id.
+     */
     @Test
     @DisplayName("Test find by id")
     public void findByIdTest() throws Exception {
@@ -80,6 +99,9 @@ public class UserControllerTest {
                 .andDo(print());
     }
 
+    /**
+     * Test update by id.
+     */
     @Test
     @DisplayName("Test update by id")
     public void updateByIdTest() throws Exception {
@@ -94,6 +116,9 @@ public class UserControllerTest {
                 .andDo(print());
     }
 
+    /**
+     * Test save.
+     */
     @Test
     @DisplayName("Test save")
     public void saveTest() throws Exception {
@@ -103,8 +128,7 @@ public class UserControllerTest {
                         .content(om.writeValueAsString(data))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
-                .andExpect(status()
-                        .isCreated())
+                .andExpect(status().isCreated())
                 .andDo(print());
     }
 }

@@ -26,23 +26,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import static org.instancio.Select.field;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Test class for the {@link hexlet.code.controller.TaskController}
+ * Test class for the {@link hexlet.code.controller.TaskController}.
  */
 @SpringBootTest(
         properties = {
-                "spring.jpa.defer-datasource-initialization=false",
-                "spring.sql.init.mode=never"
+            "spring.jpa.defer-datasource-initialization=false",
+            "spring.sql.init.mode=never"
         }
 )
 @AutoConfigureMockMvc
@@ -63,6 +56,10 @@ public class TaskControllerTest {
 
     private Task testTask;
 
+    /**
+     * Setup method for initializing the test environment before each test.
+     * Creates a test Task with 'draft' TaskStatus, no assignee, and an empty set of labels.
+     */
     @BeforeEach
     public void beforeEach() {
         var taskStatus = taskStatusRepository.findBySlug("draft").orElseThrow();
@@ -74,36 +71,46 @@ public class TaskControllerTest {
         taskRepository.save(testTask);
     }
 
+
+    /**
+     * Test delete by id.
+     */
     @Test
     @DisplayName("Test delete by id")
     public void deleteByIdTest() throws Exception {
         mockMvc.perform(delete("/api/tasks/{id}", testTask.getId())
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
-                .andExpect(status()
-                        .isNoContent())
+                .andExpect(status().isNoContent())
                 .andDo(print());
     }
 
+    /**
+     * Test find all.
+     */
     @Test
     @DisplayName("Test find all")
     public void findAllTest() throws Exception {
         mockMvc.perform(get("/api/tasks")
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
-                .andExpect(status()
-                        .isOk())
+                .andExpect(status().isOk())
                 .andDo(print());
     }
 
+    /**
+     * Test find by id.
+     */
     @Test
     @DisplayName("Test find by id")
     public void findByIdTest() throws Exception {
         mockMvc.perform(get("/api/tasks/{id}", testTask.getId())
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
-                .andExpect(status()
-                        .isOk())
+                .andExpect(status().isOk())
                 .andDo(print());
     }
 
+    /**
+     * Test save.
+     */
     @Test
     @DisplayName("Test save")
     public void saveTest() throws Exception {
@@ -119,14 +126,16 @@ public class TaskControllerTest {
                         .content(om.writeValueAsString(data))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(SecurityMockMvcRequestPostProcessors.user("admin")))
-                .andExpect(status()
-                        .isCreated())
+                .andExpect(status().isCreated())
                 .andDo(print());
 
         var task = taskRepository.findByName(name);
         assertNotNull(task.get());
     }
 
+    /**
+     * Test update by id.
+     */
     @Test
     @DisplayName("Test update by id")
     public void updateByIdTest() throws Exception {
@@ -137,8 +146,7 @@ public class TaskControllerTest {
                         .content(om.writeValueAsString(data))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(SecurityMockMvcRequestPostProcessors.user("admin")))
-                .andExpect(status()
-                        .isOk())
+                .andExpect(status().isOk())
                 .andDo(print());
     }
 }
