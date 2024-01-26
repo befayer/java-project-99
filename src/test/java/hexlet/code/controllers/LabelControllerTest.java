@@ -39,7 +39,7 @@ public class LabelControllerTest {
     @Autowired
     private LabelRepository labelRepository;
     @Autowired
-    private ObjectMapper om;
+    private ObjectMapper objectMapper;
 
     private Label testLabel;
 
@@ -89,7 +89,7 @@ public class LabelControllerTest {
                 .create();
 
         mockMvc.perform(post("/api/labels")
-                        .content(om.writeValueAsString(data))
+                        .content(objectMapper.writeValueAsString(data))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
                 .andExpect(status()
@@ -108,7 +108,7 @@ public class LabelControllerTest {
                 .create();
 
         mockMvc.perform(put("/api/labels/{id}", testLabel.getId())
-                        .content(om.writeValueAsString(data))
+                        .content(objectMapper.writeValueAsString(data))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
                 .andExpect(status()

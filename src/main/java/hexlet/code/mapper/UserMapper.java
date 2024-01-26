@@ -3,7 +3,11 @@ package hexlet.code.mapper;
 import hexlet.code.dto.UserRequestDto;
 import hexlet.code.dto.UserResponseDto;
 import hexlet.code.entity.User;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring")
 public interface UserMapper {

@@ -47,6 +47,7 @@ dependencies {
 	testImplementation("org.skyscreamer:jsonassert:1.5.1")
 	implementation("org.liquibase:liquibase-core")
 	runtimeOnly("org.postgresql:postgresql")
+	developmentOnly("org.springframework.boot:spring-boot-devtools")
 }
 
 tasks.withType<Test> {
