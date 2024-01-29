@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,39 +32,40 @@ public final class TaskController {
      *
      * @param id          The ID of the task to be updated.
      * @param taskRequest The request containing updated task information.
-     * @return The updated task response.
+     * @return ResponseEntity with the updated task response or an error response.
      */
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public TaskResponse updateById(@PathVariable Long id, @RequestBody TaskRequest taskRequest) {
-        return taskService.updateById(id, taskRequest);
+    public ResponseEntity<TaskResponse> updateById(@PathVariable Long id, @RequestBody TaskRequest taskRequest) {
+        TaskResponse updatedTask = taskService.updateById(id, taskRequest);
+        return ResponseEntity.ok(updatedTask);
     }
 
     /**
      * Creates a new task.
      *
      * @param taskRequest The request containing task information.
-     * @return The created task response.
+     * @return ResponseEntity with the created task response or an error response.
      */
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public TaskResponse save(@RequestBody TaskRequest taskRequest) {
-        return taskService.save(taskRequest);
+    public ResponseEntity<TaskResponse> save(@RequestBody TaskRequest taskRequest) {
+        TaskResponse createdTask = taskService.save(taskRequest);
+        return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
 
     /**
      * Finds a task by its ID.
      *
      * @param id The ID of the task to be retrieved.
-     * @return The task response.
+     * @return ResponseEntity with the task response or an error response.
      */
     @GetMapping("/{id}")
-    public TaskResponse findById(@PathVariable Long id) {
-        return taskService.findById(id);
+    public ResponseEntity<TaskResponse> findById(@PathVariable Long id) {
+        TaskResponse task = taskService.findById(id);
+        return ResponseEntity.ok(task);
     }
 
     /**
-     * Finds all tasks.
+     * Finds all tasks based on the provided query parameters.
      *
      * @param taskParams The parameters for querying tasks.
      * @return ResponseEntity with a list of task responses and headers including total count.
@@ -75,7 +75,6 @@ public final class TaskController {
         List<TaskResponse> tasks = taskService.findAll(taskParams);
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-Total-Count", String.valueOf(tasks.size()));
-
         return new ResponseEntity<>(tasks, headers, HttpStatus.OK);
     }
 
@@ -83,10 +82,11 @@ public final class TaskController {
      * Deletes a task by its ID.
      *
      * @param id The ID of the task to be deleted.
+     * @return ResponseEntity indicating the success or failure of the deletion.
      */
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         taskService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

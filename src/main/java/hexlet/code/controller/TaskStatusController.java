@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,7 +47,6 @@ public final class TaskStatusController {
         List<TaskStatusResponse> statuses = statusService.findAll();
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-Total-Count", String.valueOf(statuses.size()));
-
         return new ResponseEntity<>(statuses, headers, HttpStatus.OK);
     }
 
@@ -60,21 +58,21 @@ public final class TaskStatusController {
      * @return The updated task status response.
      */
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public TaskStatusResponse updateById(@PathVariable Long id,
+    public ResponseEntity<TaskStatusResponse> updateById(@PathVariable Long id,
                                          @RequestBody @Valid TaskStatusRequest taskStatusRequest) {
-        return statusService.updateById(id, taskStatusRequest);
+        return ResponseEntity.ok(statusService.updateById(id, taskStatusRequest));
     }
 
     /**
      * Deletes a task status by its ID.
      *
      * @param id The ID of the task status to be deleted.
+     * @return ResponseEntity indicating the success of the deletion (HTTP 204 No Content).
      */
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         statusService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     /**
@@ -84,8 +82,7 @@ public final class TaskStatusController {
      * @return The created task status response.
      */
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public TaskStatusResponse save(@RequestBody @Valid TaskStatusRequest taskStatusRequest) {
-        return statusService.save(taskStatusRequest);
+    public ResponseEntity<TaskStatusResponse> save(@RequestBody @Valid TaskStatusRequest taskStatusRequest) {
+        return new ResponseEntity<>(statusService.save(taskStatusRequest), HttpStatus.CREATED);
     }
 }

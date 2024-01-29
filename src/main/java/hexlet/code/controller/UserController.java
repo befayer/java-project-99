@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,15 +28,16 @@ public class UserController {
     private final UserService userService;
 
     /**
-     * Deletes a user by ID.
+     * Deletes a user by its ID.
      *
      * @param id The ID of the user to be deleted.
+     * @return ResponseEntity indicating the success of the deletion (HTTP 204 No Content).
      */
     @DeleteMapping("/{id}")
     @PreAuthorize(value = "@userService.findById(#id).getEmail() == authentication.name")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         userService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     /**
@@ -50,7 +50,6 @@ public class UserController {
         List<UserResponseDto> users = userService.findAll();
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-Total-Count", String.valueOf(users.size()));
-
         return new ResponseEntity<>(users, headers, HttpStatus.OK);
     }
 
@@ -72,9 +71,8 @@ public class UserController {
      * @return The created user response DTO.
      */
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserResponseDto save(@RequestBody @Valid UserRequestDto userRequestDto) {
-        return userService.save(userRequestDto);
+    public ResponseEntity<UserResponseDto> save(@RequestBody @Valid UserRequestDto userRequestDto) {
+        return new ResponseEntity<>(userService.save(userRequestDto), HttpStatus.CREATED);
     }
 
     /**
@@ -86,8 +84,8 @@ public class UserController {
      */
     @PutMapping("/{id}")
     @PreAuthorize(value = "@userService.findById(#id).getEmail() == authentication.name")
-    @ResponseStatus(HttpStatus.OK)
-    public UserResponseDto updateById(@PathVariable Long id, @Valid @RequestBody UserRequestDto userRequestDto) {
-        return userService.updateById(id, userRequestDto);
+    public ResponseEntity<UserResponseDto> updateById(@PathVariable Long id,
+                                                      @Valid @RequestBody UserRequestDto userRequestDto) {
+        return ResponseEntity.ok(userService.updateById(id, userRequestDto));
     }
 }

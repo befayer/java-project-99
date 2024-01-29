@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,9 +34,8 @@ public class LabelController {
      * @return The updated label response.
      */
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public LabelResponse updateById(@PathVariable Long id, @RequestBody LabelRequest labelRequest) {
-        return labelService.updateById(id, labelRequest);
+    public ResponseEntity<LabelResponse> updateById(@PathVariable Long id, @RequestBody LabelRequest labelRequest) {
+        return ResponseEntity.ok(labelService.updateById(id, labelRequest));
     }
 
     /**
@@ -47,9 +45,8 @@ public class LabelController {
      * @return The created label response.
      */
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public LabelResponse save(@RequestBody LabelRequest labelRequest) {
-        return labelService.save(labelRequest);
+    public ResponseEntity<LabelResponse> save(@RequestBody LabelRequest labelRequest) {
+        return new ResponseEntity<>(labelService.save(labelRequest), HttpStatus.CREATED);
     }
 
     /**
@@ -59,8 +56,8 @@ public class LabelController {
      * @return The label response.
      */
     @GetMapping("/{id}")
-    public LabelResponse findById(@PathVariable Long id) {
-        return labelService.findById(id);
+    public ResponseEntity<LabelResponse> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(labelService.findById(id));
     }
 
     /**
@@ -73,7 +70,6 @@ public class LabelController {
         List<LabelResponse> labels = labelService.findAll();
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-Total-Count", String.valueOf(labels.size()));
-
         return new ResponseEntity<>(labels, headers, HttpStatus.OK);
     }
 
@@ -81,10 +77,11 @@ public class LabelController {
      * Deletes a label by its ID.
      *
      * @param id The ID of the label to be deleted.
+     * @return ResponseEntity indicating the success of the deletion (HTTP 204 No Content).
      */
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         labelService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

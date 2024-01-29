@@ -64,9 +64,7 @@ public final class TaskService {
      */
     public TaskResponse save(TaskRequest taskRequest) {
         Task task = taskMapper.toTask(taskRequest);
-
         setAssociations(taskRequest, task);
-
         Task saved = taskRepository.save(task);
         return taskMapper.toTaskResponse(saved);
     }
@@ -80,11 +78,8 @@ public final class TaskService {
      */
     public TaskResponse updateById(Long id, TaskRequest taskRequest) {
         Task task = taskRepository.findById(id).orElseThrow();
-        // Update only basic fields
         Task updated = taskMapper.partialUpdate(taskRequest, task);
-
         setAssociations(taskRequest, updated);
-
         Task saved = taskRepository.save(updated);
         return taskMapper.toTaskResponse(saved);
     }
