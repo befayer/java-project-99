@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -34,6 +35,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 )
 @AutoConfigureMockMvc
 public class UserControllerTest {
+
+    private static final String API_USERS_PATH = "/api/users";
+
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -55,13 +59,9 @@ public class UserControllerTest {
      */
     @BeforeEach
     public void beforeEach() {
-        // Create a test user instance using the configured user model
         testUser = Instancio.of(modelGenerator.getUserModel()).create();
-
-        // Save the test user to the user repository
-        userRepository.save(testUser);
+        assertDoesNotThrow(() -> userRepository.save(testUser));
     }
-
 
     /**
      * Test find all.
@@ -69,7 +69,7 @@ public class UserControllerTest {
     @Test
     @DisplayName("Test find all")
     public void findAllTest() throws Exception {
-        mockMvc.perform(get("/api/users")
+        mockMvc.perform(get(API_USERS_PATH)
                         .with(SecurityMockMvcRequestPostProcessors.user("admin")))
                 .andExpect(status().isOk())
                 .andDo(print());
@@ -81,7 +81,7 @@ public class UserControllerTest {
     @Test
     @DisplayName("Test delete by id")
     public void deleteByIdTest() throws Exception {
-        mockMvc.perform(delete("/api/users/{id}", testUser.getId())
+        mockMvc.perform(delete(API_USERS_PATH + "/{id}", testUser.getId())
                         .with(SecurityMockMvcRequestPostProcessors.user(testUser.getEmail())))
                 .andExpect(status().isNoContent())
                 .andDo(print());
@@ -93,7 +93,7 @@ public class UserControllerTest {
     @Test
     @DisplayName("Test find by id")
     public void findByIdTest() throws Exception {
-        mockMvc.perform(get("/api/users/{id}", testUser.getId())
+        mockMvc.perform(get(API_USERS_PATH + "/{id}", testUser.getId())
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
                 .andExpect(status().isOk())
                 .andDo(print());
@@ -105,10 +105,10 @@ public class UserControllerTest {
     @Test
     @DisplayName("Test update by id")
     public void updateByIdTest() throws Exception {
-        var data = new UserRequestDto();
+        UserRequestDto data = new UserRequestDto();
         data.setFirstName("New name");
 
-        mockMvc.perform(put("/api/users/{id}", testUser.getId())
+        mockMvc.perform(put(API_USERS_PATH + "/{id}", testUser.getId())
                         .content(om.writeValueAsString(data))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(SecurityMockMvcRequestPostProcessors.user(testUser.getEmail())))
@@ -122,9 +122,9 @@ public class UserControllerTest {
     @Test
     @DisplayName("Test save")
     public void saveTest() throws Exception {
-        var data = Instancio.of(modelGenerator.getUserModel())
+        User data = Instancio.of(modelGenerator.getUserModel())
                 .create();
-        mockMvc.perform(post("/api/users")
+        mockMvc.perform(post(API_USERS_PATH)
                         .content(om.writeValueAsString(data))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))

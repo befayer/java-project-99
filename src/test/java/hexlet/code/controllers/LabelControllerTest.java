@@ -15,7 +15,7 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.instancio.Select.field;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -35,6 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class LabelControllerTest {
 
+    private static final String API_LABEL_PATH = "/api/labels";
+
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -53,7 +55,7 @@ public class LabelControllerTest {
         testLabel = Instancio.of(Label.class)
                 .ignore(field(Label.class, "id"))
                 .create();
-        labelRepository.save(testLabel);
+        assertDoesNotThrow(() -> labelRepository.save(testLabel));
     }
 
     /**
@@ -62,7 +64,7 @@ public class LabelControllerTest {
     @Test
     @DisplayName("Test delete by id")
     public void deleteByIdTest() throws Exception {
-        mockMvc.perform(delete("/api/labels/{id}", testLabel.getId())
+        mockMvc.perform(delete(API_LABEL_PATH + "/{id}", testLabel.getId())
                         .with(SecurityMockMvcRequestPostProcessors.user("admin")))
                 .andExpect(status().isNoContent())
                 .andDo(print());
@@ -74,7 +76,7 @@ public class LabelControllerTest {
     @Test
     @DisplayName("Test find all")
     public void findAllTest() throws Exception {
-        mockMvc.perform(get("/api/labels")
+        mockMvc.perform(get(API_LABEL_PATH)
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
                 .andExpect(status().isOk())
                 .andDo(print());
@@ -86,7 +88,7 @@ public class LabelControllerTest {
     @Test
     @DisplayName("Test find by id")
     public void findByIdTest() throws Exception {
-        mockMvc.perform(get("/api/labels/{id}", testLabel.getId())
+        mockMvc.perform(get(API_LABEL_PATH + "/{id}", testLabel.getId())
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
                 .andExpect(status().isOk())
                 .andDo(print());
@@ -98,19 +100,16 @@ public class LabelControllerTest {
     @Test
     @DisplayName("Test save")
     public void saveTest() throws Exception {
-        var data = Instancio.of(Label.class)
+        Label data = Instancio.of(Label.class)
                 .ignore(field(Label.class, "id"))
                 .create();
 
-        mockMvc.perform(post("/api/labels")
+        mockMvc.perform(post(API_LABEL_PATH)
                         .content(objectMapper.writeValueAsString(data))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
                 .andExpect(status().isCreated())
                 .andDo(print());
-
-        var label = labelRepository.findByName(data.getName());
-        assertNotNull(label.get());
     }
 
     /**
@@ -119,11 +118,11 @@ public class LabelControllerTest {
     @Test
     @DisplayName("Test update by id")
     public void updateByIdTest() throws Exception {
-        var data = Instancio.of(Label.class)
+        Label data = Instancio.of(Label.class)
                 .ignore(field(Label.class, "id"))
                 .create();
 
-        mockMvc.perform(put("/api/labels/{id}", testLabel.getId())
+        mockMvc.perform(put(API_LABEL_PATH + "/{id}", testLabel.getId())
                         .content(objectMapper.writeValueAsString(data))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))

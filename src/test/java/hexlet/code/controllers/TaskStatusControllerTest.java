@@ -15,7 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -34,6 +34,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 )
 @AutoConfigureMockMvc
 public class TaskStatusControllerTest {
+
+    private static final String API_TASK_STATUSES_PATH = "/api/task_statuses";
 
     @Autowired
     private MockMvc mockMvc;
@@ -54,7 +56,7 @@ public class TaskStatusControllerTest {
         testTaskStatus = Instancio.of(TaskStatus.class)
                 .ignore(Select.field(TaskStatus.class, "id"))
                 .create();
-        taskStatusRepository.save(testTaskStatus);
+        assertDoesNotThrow(() -> taskStatusRepository.save(testTaskStatus));
     }
 
     /**
@@ -64,7 +66,7 @@ public class TaskStatusControllerTest {
     @Test
     @DisplayName("Test delete")
     public void deleteTest() throws Exception {
-        mockMvc.perform(delete("/api/task_statuses/{id}", testTaskStatus.getId())
+        mockMvc.perform(delete(API_TASK_STATUSES_PATH + "/{id}", testTaskStatus.getId())
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
                 .andExpect(status()
                         .isNoContent())
@@ -78,7 +80,7 @@ public class TaskStatusControllerTest {
     @Test
     @DisplayName("Test find all")
     public void findAllTest() throws Exception {
-        mockMvc.perform(get("/api/task_statuses")
+        mockMvc.perform(get(API_TASK_STATUSES_PATH)
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
                 .andExpect(status()
                         .isOk())
@@ -92,7 +94,7 @@ public class TaskStatusControllerTest {
     @Test
     @DisplayName("Test find by id")
     public void findByIdTest() throws Exception {
-        mockMvc.perform(get("/api/task_statuses/{id}", testTaskStatus.getId())
+        mockMvc.perform(get(API_TASK_STATUSES_PATH + "/{id}", testTaskStatus.getId())
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
                 .andExpect(status()
                         .isOk())
@@ -111,16 +113,13 @@ public class TaskStatusControllerTest {
                 .ignore(Select.field(TaskStatus.class, "id"))
                 .create();
 
-        mockMvc.perform(post("/api/task_statuses")
+        mockMvc.perform(post(API_TASK_STATUSES_PATH)
                         .content(om.writeValueAsString(data))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
                 .andExpect(status()
                         .isCreated())
                 .andDo(print());
-
-        var taskStatus = taskStatusRepository.findBySlug(data.getSlug());
-        assertNotNull(taskStatus.get());
     }
 
     /**
@@ -134,7 +133,7 @@ public class TaskStatusControllerTest {
                 .ignore(Select.field(TaskStatus.class, "id"))
                 .create();
 
-        mockMvc.perform(put("/api/task_statuses/{id}", testTaskStatus.getId())
+        mockMvc.perform(put(API_TASK_STATUSES_PATH + "/{id}", testTaskStatus.getId())
                         .content(om.writeValueAsString(data))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))

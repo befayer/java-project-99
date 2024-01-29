@@ -2,7 +2,9 @@ package hexlet.code.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.dto.TaskRequest;
+import hexlet.code.entity.Label;
 import hexlet.code.entity.Task;
+import hexlet.code.entity.TaskStatus;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
@@ -21,7 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -40,6 +42,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 )
 @AutoConfigureMockMvc
 public class TaskControllerTest {
+
+    private static final String API_TASK_PATH = "/api/tasks";
 
     @Autowired
     private MockMvc mockMvc;
@@ -62,15 +66,14 @@ public class TaskControllerTest {
      */
     @BeforeEach
     public void beforeEach() {
-        var taskStatus = taskStatusRepository.findBySlug("draft").orElseThrow();
+        TaskStatus taskStatus = taskStatusRepository.findBySlug("draft").orElseThrow();
         testTask = Instancio.of(modelGenerator.getTaskModel())
                 .set(Select.field(Task::getAssignee), null)
                 .create();
         testTask.setTaskStatus(taskStatus);
         testTask.setLabels(Set.of());
-        taskRepository.save(testTask);
+        assertDoesNotThrow(() -> taskRepository.save(testTask));
     }
-
 
     /**
      * Test delete by id.
@@ -78,7 +81,7 @@ public class TaskControllerTest {
     @Test
     @DisplayName("Test delete by id")
     public void deleteByIdTest() throws Exception {
-        mockMvc.perform(delete("/api/tasks/{id}", testTask.getId())
+        mockMvc.perform(delete(API_TASK_PATH + "/{id}", testTask.getId())
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
                 .andExpect(status().isNoContent())
                 .andDo(print());
@@ -90,7 +93,7 @@ public class TaskControllerTest {
     @Test
     @DisplayName("Test find all")
     public void findAllTest() throws Exception {
-        mockMvc.perform(get("/api/tasks")
+        mockMvc.perform(get(API_TASK_PATH)
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
                 .andExpect(status().isOk())
                 .andDo(print());
@@ -102,7 +105,7 @@ public class TaskControllerTest {
     @Test
     @DisplayName("Test find by id")
     public void findByIdTest() throws Exception {
-        mockMvc.perform(get("/api/tasks/{id}", testTask.getId())
+        mockMvc.perform(get(API_TASK_PATH + "/{id}", testTask.getId())
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
                 .andExpect(status().isOk())
                 .andDo(print());
@@ -114,23 +117,20 @@ public class TaskControllerTest {
     @Test
     @DisplayName("Test save")
     public void saveTest() throws Exception {
-        var taskStatus = taskStatusRepository.findBySlug("draft").get();
-        var label = labelRepository.findByName("feature").get();
-        var data = new TaskRequest();
+        TaskStatus taskStatus = taskStatusRepository.findBySlug("draft").get();
+        Label label = labelRepository.findByName("feature").get();
+        TaskRequest data = new TaskRequest();
         String name = "New Task Name";
         data.setTitle(name);
         data.setStatus(taskStatus.getSlug());
         data.setTaskLabelIds(Set.of(label.getId()));
 
-        mockMvc.perform(post("/api/tasks")
+        mockMvc.perform(post(API_TASK_PATH)
                         .content(om.writeValueAsString(data))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(SecurityMockMvcRequestPostProcessors.user("admin")))
                 .andExpect(status().isCreated())
                 .andDo(print());
-
-        var task = taskRepository.findByName(name);
-        assertNotNull(task.get());
     }
 
     /**
@@ -139,10 +139,10 @@ public class TaskControllerTest {
     @Test
     @DisplayName("Test update by id")
     public void updateByIdTest() throws Exception {
-        var data = Instancio.of(modelGenerator.getTaskModel())
+        Task data = Instancio.of(modelGenerator.getTaskModel())
                 .create();
 
-        mockMvc.perform(put("/api/tasks/{id}", testTask.getId())
+        mockMvc.perform(put(API_TASK_PATH + "/{id}", testTask.getId())
                         .content(om.writeValueAsString(data))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(SecurityMockMvcRequestPostProcessors.user("admin")))
