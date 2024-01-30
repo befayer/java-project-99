@@ -1,4 +1,4 @@
-package hexlet.code.entity;
+package hexlet.code.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

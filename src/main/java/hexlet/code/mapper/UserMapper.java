@@ -2,7 +2,7 @@ package hexlet.code.mapper;
 
 import hexlet.code.dto.UserRequestDto;
 import hexlet.code.dto.UserResponseDto;
-import hexlet.code.entity.User;
+import hexlet.code.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.NullValuePropertyMappingStrategy;

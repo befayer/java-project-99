@@ -1,7 +1,7 @@
 package hexlet.code.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.entity.TaskStatus;
+import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.TaskStatusRepository;
 import org.instancio.Instancio;
 import org.instancio.Select;

@@ -1,7 +1,7 @@
 package hexlet.code.utils;
 
-import hexlet.code.entity.Task;
-import hexlet.code.entity.User;
+import hexlet.code.model.Task;
+import hexlet.code.model.User;
 import jakarta.annotation.PostConstruct;
 import net.datafaker.Faker;
 import org.instancio.Instancio;

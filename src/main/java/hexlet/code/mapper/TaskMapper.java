@@ -2,8 +2,8 @@ package hexlet.code.mapper;
 
 import hexlet.code.dto.TaskRequest;
 import hexlet.code.dto.TaskResponse;
-import hexlet.code.entity.Label;
-import hexlet.code.entity.Task;
+import hexlet.code.model.Label;
+import hexlet.code.model.Task;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.MappingConstants;

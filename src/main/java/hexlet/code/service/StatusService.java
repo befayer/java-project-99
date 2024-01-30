@@ -3,7 +3,7 @@ package hexlet.code.service;
 import hexlet.code.dto.TaskStatusRequest;
 import hexlet.code.dto.TaskStatusResponse;
 import hexlet.code.mapper.StatusMapper;
-import hexlet.code.entity.TaskStatus;
+import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.TaskStatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -2,7 +2,7 @@ package hexlet.code.mapper;
 
 import hexlet.code.dto.TaskStatusRequest;
 import hexlet.code.dto.TaskStatusResponse;
-import hexlet.code.entity.TaskStatus;
+import hexlet.code.model.TaskStatus;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.MappingConstants;

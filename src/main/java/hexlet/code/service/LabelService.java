@@ -3,7 +3,7 @@ package hexlet.code.service;
 import hexlet.code.dto.LabelRequest;
 import hexlet.code.dto.LabelResponse;
 import hexlet.code.mapper.LabelMapper;
-import hexlet.code.entity.Label;
+import hexlet.code.model.Label;
 import hexlet.code.repository.LabelRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

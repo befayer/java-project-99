@@ -3,7 +3,7 @@ package hexlet.code.service;
 import hexlet.code.dto.UserRequestDto;
 import hexlet.code.dto.UserResponseDto;
 import hexlet.code.mapper.UserMapper;
-import hexlet.code.entity.User;
+import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

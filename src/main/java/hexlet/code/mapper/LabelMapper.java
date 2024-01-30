@@ -2,7 +2,7 @@ package hexlet.code.mapper;
 
 import hexlet.code.dto.LabelRequest;
 import hexlet.code.dto.LabelResponse;
-import hexlet.code.entity.Label;
+import hexlet.code.model.Label;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.MappingConstants;

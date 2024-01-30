@@ -1,6 +1,6 @@
 package hexlet.code.service;
 
-import hexlet.code.entity.User;
+import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

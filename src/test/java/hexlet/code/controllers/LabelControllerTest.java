@@ -1,7 +1,7 @@
 package hexlet.code.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.entity.Label;
+import hexlet.code.model.Label;
 import hexlet.code.repository.LabelRepository;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;

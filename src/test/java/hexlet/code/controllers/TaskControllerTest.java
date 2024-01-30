@@ -2,9 +2,9 @@ package hexlet.code.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.dto.TaskRequest;
-import hexlet.code.entity.Label;
-import hexlet.code.entity.Task;
-import hexlet.code.entity.TaskStatus;
+import hexlet.code.model.Label;
+import hexlet.code.model.Task;
+import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;

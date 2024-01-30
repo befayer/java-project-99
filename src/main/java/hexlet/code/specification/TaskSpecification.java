@@ -1,7 +1,7 @@
 package hexlet.code.specification;
 
 import hexlet.code.dto.TaskParams;
-import hexlet.code.entity.Task;
+import hexlet.code.model.Task;
 import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;

@@ -2,7 +2,7 @@ package hexlet.code.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.dto.UserRequestDto;
-import hexlet.code.entity.User;
+import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.utils.ModelGenerator;
 import org.instancio.Instancio;
