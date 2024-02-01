@@ -23,10 +23,16 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Set;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -85,6 +91,8 @@ public class TaskControllerTest {
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
                 .andExpect(status().isNoContent())
                 .andDo(print());
+
+        assertFalse(taskRepository.existsById(testTask.getId()));
     }
 
     /**
@@ -93,9 +101,13 @@ public class TaskControllerTest {
     @Test
     @DisplayName("Test find all")
     public void findAllTest() throws Exception {
+        var expectedSize = taskRepository.findAll().size();
+        System.out.println(expectedSize);
+
         mockMvc.perform(get(API_TASK_PATH)
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(expectedSize)))
                 .andDo(print());
     }
 
@@ -108,6 +120,11 @@ public class TaskControllerTest {
         mockMvc.perform(get(API_TASK_PATH + "/{id}", testTask.getId())
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(testTask.getId()))
+                .andExpect(jsonPath("$.title").value(testTask.getName()))
+                .andExpect(jsonPath("$.index").value(testTask.getIndex()))
+                .andExpect(jsonPath("$.content").value(testTask.getDescription()))
+                .andExpect(jsonPath("$.assignee_id").value(testTask.getAssignee()))
                 .andDo(print());
     }
 
@@ -131,6 +148,10 @@ public class TaskControllerTest {
                         .with(SecurityMockMvcRequestPostProcessors.user("admin")))
                 .andExpect(status().isCreated())
                 .andDo(print());
+
+        var task = taskRepository.findByName(name);
+        assertNotNull(task.get());
+        assertEquals(name, task.get().getName());
     }
 
     /**
@@ -148,5 +169,8 @@ public class TaskControllerTest {
                         .with(SecurityMockMvcRequestPostProcessors.user("admin")))
                 .andExpect(status().isOk())
                 .andDo(print());
+
+        var updatedTask = taskRepository.findById(testTask.getId());
+        assertTrue(updatedTask.isPresent());
     }
 }

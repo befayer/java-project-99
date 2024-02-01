@@ -15,13 +15,19 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 /**
  * Test class for the {@link hexlet.code.controller.TaskStatusController}.
@@ -71,6 +77,8 @@ public class TaskStatusControllerTest {
                 .andExpect(status()
                         .isNoContent())
                 .andDo(print());
+
+        assertFalse(taskStatusRepository.existsById(testTaskStatus.getId()));
     }
 
     /**
@@ -98,6 +106,8 @@ public class TaskStatusControllerTest {
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
                 .andExpect(status()
                         .isOk())
+                .andExpect(jsonPath("$.id").value(testTaskStatus.getId()))
+                .andExpect(jsonPath("$.name").value(testTaskStatus.getName()))
                 .andDo(print());
     }
 
@@ -120,6 +130,10 @@ public class TaskStatusControllerTest {
                 .andExpect(status()
                         .isCreated())
                 .andDo(print());
+
+        var taskStatus = taskStatusRepository.findBySlug(data.getSlug());
+        assertNotNull(taskStatus.get());
+        assertEquals(data.getName(), taskStatus.get().getName());
     }
 
     /**
@@ -140,5 +154,9 @@ public class TaskStatusControllerTest {
                 .andExpect(status()
                         .isOk())
                 .andDo(print());
+
+        var updatedTaskStatus = taskStatusRepository.findById(testTaskStatus.getId());
+        assertTrue(updatedTaskStatus.isPresent());
+        assertEquals(data.getName(), updatedTaskStatus.get().getName());
     }
 }

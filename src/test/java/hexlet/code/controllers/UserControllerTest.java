@@ -16,12 +16,17 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -69,9 +74,13 @@ public class UserControllerTest {
     @Test
     @DisplayName("Test find all")
     public void findAllTest() throws Exception {
+        var expectedSize = userRepository.findAll().size();
+        System.out.println(expectedSize);
+
         mockMvc.perform(get(API_USERS_PATH)
                         .with(SecurityMockMvcRequestPostProcessors.user("admin")))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(expectedSize)))
                 .andDo(print());
     }
 
@@ -114,6 +123,11 @@ public class UserControllerTest {
                         .with(SecurityMockMvcRequestPostProcessors.user(testUser.getEmail())))
                 .andExpect(status().isOk())
                 .andDo(print());
+
+        var updatedUser = userRepository.findById(testUser.getId());
+        assertTrue(updatedUser.isPresent());
+        assertEquals(data.getFirstName(), updatedUser.get().getFirstName());
+
     }
 
     /**
@@ -124,11 +138,16 @@ public class UserControllerTest {
     public void saveTest() throws Exception {
         User data = Instancio.of(modelGenerator.getUserModel())
                 .create();
+
         mockMvc.perform(post(API_USERS_PATH)
                         .content(om.writeValueAsString(data))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
                 .andExpect(status().isCreated())
                 .andDo(print());
+
+        var user = userRepository.findByEmail(data.getEmail());
+        assertNotNull(user);
+        assertEquals(data.getEmail(), user.get().getEmail());
     }
 }

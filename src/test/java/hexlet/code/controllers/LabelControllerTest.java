@@ -16,12 +16,17 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 /**
  * Test class for the {@link hexlet.code.controller.LabelController}.
@@ -68,6 +73,8 @@ public class LabelControllerTest {
                         .with(SecurityMockMvcRequestPostProcessors.user("admin")))
                 .andExpect(status().isNoContent())
                 .andDo(print());
+
+        assertFalse(labelRepository.existsById(testLabel.getId()));
     }
 
     /**
@@ -91,6 +98,8 @@ public class LabelControllerTest {
         mockMvc.perform(get(API_LABEL_PATH + "/{id}", testLabel.getId())
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(testLabel.getId())) // Проверка, что id совпадает
+                .andExpect(jsonPath("$.name").value(testLabel.getName())) // Проверка, что имя совпадает
                 .andDo(print());
     }
 
@@ -110,6 +119,10 @@ public class LabelControllerTest {
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
                 .andExpect(status().isCreated())
                 .andDo(print());
+
+        var label = labelRepository.findByName(data.getName());
+        assertNotNull(label);
+        assertEquals(data.getName(), label.get().getName());
     }
 
     /**
@@ -128,5 +141,9 @@ public class LabelControllerTest {
                         .with(SecurityMockMvcRequestPostProcessors.user("user")))
                 .andExpect(status().isOk())
                 .andDo(print());
+
+        var updatedLabel = labelRepository.findById(testLabel.getId());
+        assertTrue(updatedLabel.isPresent());
+        assertEquals(data.getName(), updatedLabel.get().getName());
     }
 }
